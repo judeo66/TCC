@@ -1,0 +1,100 @@
+{% extends 'HTML/index.html' %}                                                             # herda a pagina index 
+
+{% block title %} Calculadora {% endblock %}
+
+{% block head %}
+    {% load static %}
+    {% get_static_prefix as STATIC_URL %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.maskedinput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/alimentos.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/alimentos.css" />
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("html").on("click","#btnCalc",function(){ 
+                $("#totalCal").val($("#totalcal").text());
+            });
+
+            $("html").on("click","#btnCalc",function(){
+                var nGlic = $("#nivelGlicose").val();
+                if (nGlic > 200 || nGlic < 0)
+                {
+                    alert("Valor invalido digitado");
+                }   
+            });
+        });    
+    </script>
+{% endblock %}
+
+{% block menu %}
+    <li><a class="w3-padding" href="/registros/">Registros </a></li>
+    <li><a class="w3-padding" href="/calculadora/">Calculadora</a></li>
+    <li><a class="w3-padding" href="/grafico/">Gráficos</a></li>
+    <li><a class="w3-padding" href="/relatorios/">Relatórios</a></li>
+{% endblock %}
+
+{% block content %}                                 
+<form action="" class="form-signin" method="post">{% csrf_token %}
+    {% if msg %}    
+        <div class="alert alert-danger" >{{ msg }}</div>
+    {% endif %}
+
+	<h2 class="form-signin-heading">Calculadora </h2>
+    <h4 class="form-signin-heading">Ultima aplicação</h4>
+    <input type="Time" name="horario" placeholder="mg/dl" class="form-control" required>
+
+    <h4 class="form-signin-heading">Insulina que tomou pela ultima vez</h4>
+    <select name="Insulina" min="0" max="250" class="form-control" required>
+    {% for i in medics %}
+        <option value={{ i.id }}>{{ i.Marca }} </option>
+    {% endfor %}
+    </select>
+
+    <h4 class="form-signin-heading">Glicose</h4>
+    <input type="number" name="nivelGlicose" id="nivelGlicose" placeholder="mg/dl" class="form-control" required>
+
+    <input type="hidden" id="totalCal" name="totalCal" value="0">
+        
+    <div class="row">
+        <div class="col-md-4">
+        <h2>O que você comeu?</h2>        
+        <div id="produtos">
+            <div class="listprod"><a href="javascript:escolha('BEBIDAS')">BEBIDAS</a></div>
+            <div class="listprod"><a href="javascript:escolha('CARNES, FRIOS E OVOS')">CARNES, FRIOS E OVOS</a></div>
+            <div class="listprod"><a href="javascript:escolha('DOCES E SOBREMESAS')">DOCES E SOBREMESAS</a></div>
+            <div class="listprod"><a href="javascript:escolha('FRUTAS')">FRUTAS</a></div>
+            <div class="listprod"><a href="javascript:escolha('GRÃOS, TUBÉRCULOS E CEREAIS')">GRÃOS, TUBÉRCULOS E CE/REAIS</a></div>
+            <div class="listprod"><a href="javascript:escolha('LEITE E IOGURTES')">LEITE E IOGURTES</a></div><div class="listprod"><a href="javascript:escolha('MASSAS E CIA.')">MASSAS E CIA.</a></div>
+            <div class="listprod"><a href="javascript:escolha('MOLHOS E TEMPEROS')">MOLHOS E TEMPEROS</a></div>
+            <div class="listprod"><a href="javascript:escolha('PEIXES E FRUTOS DO MAR')">PEIXES E FRUTOS DO MAR</a></div>
+            <div class="listprod"><a href="javascript:escolha('PETISCOS')">PETISCOS</a></div>
+            <div class="listprod"><a href="javascript:escolha('PRATOS VARIADOS')">PRATOS VARIADOS</a></div>
+            <div class="listprod"><a href="javascript:escolha('PÃES E BISCOITOS')">PÃES E BISCOITOS</a></div>
+            <div class="listprod"><a href="javascript:escolha('QUEIJOS')">QUEIJOS</a></div>
+            <div class="listprod"><a href="javascript:escolha('SANDUÍCHES')">SANDUÍCHES</a></div>
+            <div class="listprod"><a href="javascript:escolha('VERDURAS E LEGUMES')">VERDURAS E LEGUMES</a></div>
+            <div class="listprod"><a href="javascript:escolha('ÓLEOS E GORDURAS')">ÓLEOS E GORDURAS</a></div>
+        </div>
+
+        </div>
+
+        <div class="col-md-8">
+        <br>
+        <div class="linha">
+        <div class="item1"><b>Alimento</b></div>
+        <div class="item2"><b>Quantidade</b></div>
+        <div class="item3"><b>CHO</b></div>
+        </div>
+        <div id="select"></div>
+        <p>Total de calorias</p><div id="totalcal" ></div>
+        </div>
+        <p>Alimentos selecionados, clique para remover.</p>
+        <div class="col-md-8"> 
+        <div id="escolha"></div>
+        </div>
+        </div>
+    </br>
+    <button class="btn btn-lg btn-primary btn-block" id="btnCalc" type="submit">Calcular</button>
+</form>
+    {% endblock %}  

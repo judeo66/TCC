@@ -1,0 +1,223 @@
+{% extends 'HTML/login.html' %}
+{% block head %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.maskedinput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/script.js" ></script>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/signin.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />       
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#date").datepicker({ nextText: "", prevText: "", changeMonth: true, changeYear: true }).mask("99/99/9999");
+
+            //Esconde formulário inicial de cadastro
+            $("#proximo").click(function(){                                    // função para trocar a pagina
+                var nPeso = $("#Peso").val();                                        // catura o valor do peso
+                var nAlt = $("#Altura").val();                                       // captura o valor da alture
+                var stSenha = $("#Senha").val();
+                var stConfSenha = $("#cSenha").val();
+                var dtNasc = new Date($("#date").val());
+                var dtHj = new Date();
+
+                if(dtNasc > dtHj)
+                {
+                    alert("informe uma data de nascimento valida");
+                }
+                else if (dtHj.getYear() - dtNasc.getYear() < 13)
+                {
+                    alert("Você é muito novo para o diario glicemico");
+                }
+                else if (dtHj.getYear() - dtNasc.getYear() > 95)
+                {
+                    alert("Idade alta demais para o tratamento");
+                }
+                else
+                {
+                    if (nPeso < 30 || nPeso > 250) {                          // se o peso estiver fora dos parametros
+                        alert("Peso deve estar entre 30 e 250");
+                    } else {                                                             // se o peso for aceitavel
+                        if (stSenha != stConfSenha) {
+                            alert("as senhas nao correspondem")
+                        } else {
+                            if (nAlt < 70 || nAlt > 250) {                                 // valida a altura
+                                alert("Altura deve estar ente 70 e 250");
+                            } else {                                                             // se o peso for aceitavel
+                                $("#formularioCadastro").css('display','none');       // deixa pagina atual invisivel
+                                $("#teste").css('display','block');                   // mostra proxima pagina}
+                            }
+                        }
+                    }
+                }
+            })
+            
+            $("#anterior").click(function(){
+
+                $("#formularioCadastro").css('display','block');
+
+                $("#teste").css('display','none');
+            })
+
+
+            $("html").on('click','#valida',function(){
+                var nGliMax = $("#GlicMax").val();
+                var nGlicAlt = $("#GlicAlt").val();
+                var nMeta = $("#Meta").val();
+                var nGlicBaixa = $("#GlicBaixa").val();
+                var nGlicMin = $("#GlicMin").val();
+
+                if (nGliMax < nGlicAlt || nGliMax > 200) {
+                    alert("Valor de glicose maxima invalido (não pode ser maior que 200 ou menor ue o nível de glicemia alta)");
+                }
+                if (nGlicAlt < nMeta) {
+                    alert("O nível ideal deve ser menor que o nível alto");
+                }
+                if (nGlicBaixa < nMeta) {
+                    alert("A nível baixo deve ser menor que sua meta glicemica ");
+                }
+                if (nGlicMin > nGlicBaixa || nGlicMin < 50){
+                    alert("O nível minimo de glicemia deve ser maior que 75 e menor que a glicemia baixa");
+                }
+            })
+
+        });    
+    </script>
+    
+    <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+
+{% endblock %}
+    {% block body %} 
+    {% if senha %}
+        <div class="alert alert-alert" >As senhas não correspondem</div>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            <!-- popup box modal starts here -->
+            <div id="formModal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" id="Tamanhopopup">
+                        <div class="modal-header">
+                            <center>     
+                                <h2 class="form-signin-heading">Insira seus dados</h2>
+                            </center>
+                        </div>
+                        <div class="modal-body">
+                        <!-- form  code starts here -->
+                            <form method="POST" class="form-horizontal tpad" role="form">{% csrf_token %}    
+                                {% if situacao %}
+                                    <h4>Usuário não cadastrdo, Por favor se registre!</h4>
+                                {% else %}
+                                    </br>
+                                {% endif %}
+                                <div class="form-group">
+                                <div id="formularioCadastro"> 
+                                    <div class="col-lg-5 ">
+                                        <center>
+                                            <h4 class="form-signin-heading">Nome</h4>
+                                            <input type="text" name="Nome" class="form-control" required autofocus>
+                                            <h4 class="form-signin-heading">Email</h4>
+                                            <input type="email" name="Email" min="0" max="250" class="form-control" require> 
+                                            <h4 class="form-signin-heading">Senha</h4>
+                                            <input type="Password" id="Senha" name="Senha" class="form-control" required>
+                                            <h4 class="form-signin-heading">Confirme a senha</h4>
+                                            <input type="Password" id="cSenha" name="ConfirmaSenha" class="form-control" required>
+                                            <br>
+                                            <div class="form-group tpad">
+                                                <div class="col-lg-offset-2 col-lg-9">
+                                                    <a href="/" class="btn btn-default btn-lg">Sair</a>
+                                                    <button class="btn btn-default btn-lg"  id="proximo">Proximo</button>
+                                                </div>
+                                            </div>
+                                        </center>
+                                    </div>
+                                    <div class="col-lg-5 info">
+                                        <center>
+                                            <h4 class="form-signin-heading">Nascimento</h4>
+                                            <input id="date" value="1231" type="text" tabindex="1" name="Nascimento" class="form-control" id="data" required/>
+
+                                            <h4 class="form-signin-heading">Sexo</h4>
+                                            <input type="radio" name="Sexo" value="M"> Masculino      
+                                            <input type="radio" name="Sexo" value="F"> Feminino
+
+                                            <br>
+                                            <h4 class="form-signin-heading">Peso</h4>
+                                            <input type="number" min="0" max="250" id="Peso" name="Peso" class="form-control" >
+                                            <h4 class="form-signin-heading">Altura</h4>
+                                            <input type="number" id="Altura" name="Altura" min="0" max="250" class="form-control" ><br>
+                                            <select name="AtFisica" min="0" max="250" class="form-control" required>
+                                                <option value=1>Pouco ou nenhum exercício físico</option>
+                                                <option value=2>Esportes 1-3 dias por semana</option>
+                                                <option value=3>Esportes 3-5 dias por semana</option>
+                                                <option value=4>Esportes 5-7 dias por semana</option>
+                                                <option value=5>Esporte e trabalho físico</option>
+                                            </select>
+                                        </center>
+                                    </div>
+                                </div>
+                                <div id="teste">    
+                                    <div class="col-lg-5 ">
+                                        <center>
+                                            <h4 class="form-signin-heading">Hiperglicemia</h4>
+                                            <input type="number" name="GlicMax" placeholder="mg/dl" class="form-control"  required id="GlicMax" value="200">
+
+                                            <h4 class="form-signin-heading">Glicemia alta</h4>
+                                            <input type="number" name="GlicAlt" placeholder="mg/dl" class="form-control"  required id="GlicAlt" value="18   0">
+
+                                            <h4 class="form-signin-heading">Meta</h4>   
+                                            <input type="number" name="Meta" id="Meta" placeholder="mg/dl" class="form-control" value="100" required>
+
+                                            <h4 class="form-signin-heading">glicemia baixa</h4>
+                                            <input type="number" name="GlicBaixa" id="GlicBaixa" placeholder="mg/dl" class="form-control" value="80" required>
+
+                                            <h4 class="form-signin-heading">Hipoglicemia</h4>
+                                            <input type="number" name="GlicMin" id="GlicMin" placeholder="mg/dl" class="form-control" value="50" required>
+                                        </center>
+                                    </div>
+                                    <div class="col-lg-5 info">
+
+                                        <center>
+                                            <h4 class="form-signin-heading">Curta duração</h4>
+                                            <select name="CurtaDuracao" min="0" max="250" class="form-control" required>
+                                                {% for i in medics %}
+                                                    {% if i.Tipo == '1' or i.Tipo == '2' %}
+                                                        <option value={{ i.id }}>{{ i.Marca }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <br>
+                                            <h4 class="form-signin-heading">Longa duração</h4>
+                                            <select name="LongaDuracao" min="0" max="250" class="form-control" required>
+                                                {% for i in medics %}
+                                                    {% if i.Tipo == '4' or i.Tipo == '3' %}
+                                                        <option value={{ i.id }}>{{ i.Marca }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>   
+                                            <br>
+                                            <h4 class="form-signin-heading">Aplicações por dia</h4>
+                                            <input type="number" name="qtdsen" id="qtdsen" placeholder="mg/dl" class="form-control" value="50" required>
+
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" value="remember-me"> Aceito os termos de uso
+                                                </label>
+                                            </div> 
+                                            <br>
+                                            <a href="/" class="btn btn-default btn-lg">Sair</a>
+                                                    <button class="btn btn-default btn-lg" id="anterior">Voltar</button>
+                                            <br>
+                                            <br>
+                                            <button class="btn btn-default btn-lg btn-success" id="valida" type="submit"> Cadastrar
+                                            </button>
+                                        </center>                                           
+                                    </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- form  code ends here -->
+                        </div>
+                    </div>
+		        </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+{% endblock %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ STATIC_URL }}jquery/icone.ico">
+
+    <title>Meu Diario glicemico</title>
+
+
+    {% load static %}
+    {% get_static_prefix as STATIC_URL %}
+    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/jumbotron.css" rel="stylesheet">    
+    <script src="{{ STATIC_URL }}jquery/jquery-2.1.4.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    {% block head %}
+    {% endblock %}
+
+    </head>
+  <body>
+  {% block body %} {% endblock %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Meu diario Glicemico</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          {% block login %}{% endblock %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+    
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+	  <center>
+        <h1>Meu Diario Glicemico</h1>
+		<br>
+		<br>
+        <p>	Este é um site onde é possivel registrar e controlar sua glicemia</p>
+		<p>	fazendo de sua vida mais saudável.</p>
+        <br>
+		<p><a class="btn btn-primary btn-lg" href="/cadastro/" role="button">Registre-se &raquo;</a></p>
+		</center>
+      </div>
+    </div>
+	
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-12">
+		<center>
+			<h2>Diabetes</h2>
+			<br>
+			<p>O diabetes é uma síndrome metabólica decorrente da falta de insulina ou da incapacidade </p>
+			<p>de exercer adequadamente seus efeitos, causando um aumento da glicose no sangue. </p>
+			<br>
+			<p><a class="btn btn-default" href="http://www.diabetes.org.br/" role="button">Veja detalhes &raquo;</a></p>
+		</center>
+        </div>
+      </div>
+      <footer>  
+        <p><img src="{{ STATIC_URL }}img/CPS.jpg"> Centro Paula Souza </p>
+        <a href="/admin/">Administrador</a>
+      </footer>
+    </div> <!-- /container -->  
+  </body>
+</html>

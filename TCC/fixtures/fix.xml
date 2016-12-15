@@ -1,0 +1,15 @@
+[
+  {
+    "model": "Cadastro.Medicamentos",
+    "pk": 2,
+    "fields": {
+      "Marca" = "Apidra"
+      "Tipo" = "Glulisina"
+      "Inicio_acao" = 15
+      "Pico" = 2
+      Duracao = 20
+      Categoria = 3
+      Via = 4
+    }
+  }
+]

@@ -1,0 +1,98 @@
+{% extends 'HTML/index.html' %}                                                             # herda a pagina index 
+
+{% block title %} Notificação {% endblock %}
+
+{% block head %}
+<script type="text/javascript" language="javascript">
+$(document).ready(function(){
+
+var nGliMax = $("#GlicMax").val();
+var nGlicAlt = $("#GlicAlt").val();
+var nMeta = $("#Meta").val();
+var nGlicBaixa = $("#GlicBaixa").val();
+var nGlicMin = $("#GlicMin").val();
+
+if nGliMax < nGlicAlt || nGliMax > 200 {
+    alert("Valor de glicose maxima invalido (não pode ser maior que 200 ou menor ue o nível de glicemia alta)");
+}
+if nGlicAlt < nMeta{
+    alert("O nível ideal deve ser menor que o nível alto");
+}
+if nGlicBaixa > nMeta{
+    alert("A nível baixo deve ser maior que sua meta glicemica");
+}
+if nGlicMin > nGlicBaixa || nGlicMin < 75{
+    alert("O nível minimo de glicemia deve ser maior que 75 e menor que a glicemia baixa");
+}
+});
+</script>
+ {% endblock %}
+
+{% block menu %}
+    <li><a href="/registros/">Registros </a></li>
+    <li><a href="/calculadora/">Calculadora</a></li><span class="sr-only">(current)</span>
+    <li><a href="/grafico/">Gráficos</a></li>
+    <li><a href="/relatorios/">Relatórios</a>
+{% endblock %}
+
+{% block content %}                                 
+<form action="" class="form-signin" method="post">{% csrf_token %}
+
+  <h2 class="form-signin-heading">Configurações </h2>
+    </br>
+
+    {% if alerta %}    
+        {% if alerta == '1' %}    
+            <div class="alert alert-danger" >{{ msg }}</div>
+        {% elif alerta == '2' %}
+            <div class="alert alert-success" >Salvo com sucesso {{ alerta }}</div>
+        {% elif alerta == '3' %}    
+            2<div class="alert alert-alert" >Outro {{ alerta }}</div>
+        {% elif alerta == '4' %}    
+            <div class="alert alert-waring" >Salvo com sucesso</div>
+        {% endif %}    
+    {% endif %}
+    <div class="col-lg-5 ">
+      <center>
+        <h4 class="form-signin-heading">Hiperglicemia</h4>
+        <input type="number" name="GlicMax" placeholder="mg/dl" class="form-control" value={{ nivelGlic.HiperGLicemia }} required id="GlicMax">
+
+        <h4 class="form-signin-heading">Glicemia alta</h4>
+        <input type="number" name="GlicAlt" placeholder="mg/dl" value={{ nivelGlic.GlicAlta }} id="GlicAlt" class="form-control" required>    
+
+        <h4 class="form-signin-heading">Meta</h4>   
+        <input type="number" name="Meta" id="Meta" placeholder="mg/dl" class="form-control" value={{ nivelGlic.GLicIdeal }} required>
+
+
+        <h4 class="form-signin-heading">glicemia baixa</h4>
+        <input type="number" name="GlicBaixa" id="GlicBaixa" placeholder="mg/dl" value={{ nivelGlic.GlicBaixa }} class="form-control" required>
+
+        <h4 class="form-signin-heading">Hipoglicemia</h4>
+        <input type="number" name="GlicMin" id="GlicMin" placeholder="mg/dl" class="form-control" value={{ nivelGlic.HipoGlicemia }} required>
+      </center>
+    </div>
+    <div class="col-lg-5 info">
+      <center>
+        <h4 class="form-signin-heading">Peso</center></h4>
+    <input type="number" name="Peso" min="50" max="200" id="Peso" placeholder="Kg" class="form-control" value={{ confContato.Peso }} required>    
+
+    <h4 class="form-signin-heading">Altura</h4>
+    <input type="number" name="Altura" min="100" max="250" id="Altura" placeholder="cm" value={{ confContato.altura }} class="form-control" required>
+
+    <h4 class="form-signin-heading">Ativide física</h4>
+
+    <select type= "" name="AtFisica" id="AtFisica" min="0" max="250" class="form-signin-heading form-control"                               value="3" required>
+        <option value="1">Pouco ou nenhum exercício físico</option>
+        <option value="2">Esportes 1-3 dias por semana</option>
+        <option value="3">Esportes 3-5 dias por semana</option>
+        <option value="4">Esportes 5-7 dias por semana</option>
+        <option value="5">Esporte e trabalho físico</option>
+    </select>
+        <br>
+        <br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Alterar</button>
+      </center>
+    </div>
+    </br>    
+</form>
+{% endblock %}

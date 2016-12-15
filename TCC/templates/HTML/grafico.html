@@ -1,0 +1,378 @@
+{% extends 'HTML/index.html' %}       
+
+
+{% block title %} Grafico {% endblock %}
+
+{% block head %}     
+    {% load static %}
+    {% get_static_prefix as STATIC_URL %}
+	<style type="text/css">
+    ${demo.css}
+	   </style>
+	   <script type="text/javascript">
+        $(function () {
+            debugger;
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Nivel Glicemico'
+                },
+                subtitle: {
+                    text: 'Aqui você pode comparar seus resultados obtidos durante o ano'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: { // don't display the dummy year
+                        month: '%e. %b',
+                        year: '%b'
+                    },
+                    title: {
+                        text: 'Data'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Glicemia (m)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                },
+
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [{
+                    name: 'Geral',
+                    // Define the data points. All series have a dummy year
+                    // of 1970/71 in order to be compared on the same x axis. Note
+                    // that in JavaScript, months start at 0 for January, 1 for February etc.
+                    data: [
+                        {% for dado in reg %}
+                            [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                        {% endfor %}
+                                                
+                    ]
+                }]
+            });
+
+            $('#sobrepor').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Sobrepondo meses'
+                },
+                subtitle: {
+                    text: 'Aqui você pode comparar seus resultados obtidos em meses anteriores'
+                },
+                xAxis: {
+                    title: {
+                        text: 'Data'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Glicemia (m)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: 'Dia {point.x}: {point.y} m'
+                },
+
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [
+                    {
+                        name: 'este mês',
+                        data: [
+                            {% for dado in Mes %}
+                                [{{ dado.RegistroData.day }}, {{ dado.NivelGlicose }}],                    
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'um mês atrás',
+                        data: [
+                            {% for dados in MesAntes %}
+                                [{{ dados.RegistroData.day }}, {{ dados.NivelGlicose }}],                    
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'dois meses atrás',
+                        data: [
+                            {% for dados in MesPrimeiro %}
+                                [{{ dados.RegistroData.day }}, {{ dados.NivelGlicose }}],                    
+                            {% endfor %}
+                        ]
+                    },
+                ]
+            }); 
+            $('#horario').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Por horario'
+                },
+                subtitle: {
+                    text: 'Aqui você pode comparar seus resultados nas diferentes horas do dia durante o ano'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: { // don't display the dummy year
+                        month: '%e. %b',
+                        year: '%b'
+                    },
+                    title: {
+                        text: 'Data'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Glicemia (m)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: 'Dia {point.x:%e. %b}: {point.y} m'
+                },
+
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [
+                    {
+                        name: 'Antes do antes do café',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '1' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do café',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '2' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'antes do almoço',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '3' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do almoço',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '4' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'antes do jantar',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '5' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do jantar',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '6' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'Madrugada',
+                        data: [
+                            {% for dado in reg %}
+                                {% if dado.Hora == '7' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                ]
+            });
+
+            $('#horarioMes').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Por horario'
+                },
+                subtitle: {
+                    text: 'Aqui você pode comparar seus resultados nas diferentes horas neste mês'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: { // don't display the dummy year
+                        month: '%e. %b',
+                        year: '%b'
+                    },
+                    title: {
+                        text: 'Data'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Glicemia (m)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: 'Dia {point.x:%e. %b}: {point.y} m'
+                },
+
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [
+                    {
+                        name: 'Antes do antes do café',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '1' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do café',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '2' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'antes do almoço',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '3' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do almoço',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '4' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'antes do jantar',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '5' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'depois do jantar',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '6' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'Madrugada',
+                        data: [
+                            {% for dado in Mes %}
+                                {% if dado.Hora == '7' %}
+                                    [Date.UTC({{ dado.RegistroData.year }}, {{ dado.RegistroData.month }} - 1, {{ dado.RegistroData.day }}), {{ dado.NivelGlicose }}],
+                                {% endif %}
+                            {% endfor %}
+                        ]
+                    },
+                ]
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block menu %}
+    <li><a class="w3-padding" href="/registros/">Registros </a></li>
+    <li><a class="w3-padding" href="/calculadora/">Calculadora</a></li>
+    <li><a class="w3-padding" href="/grafico/">Gráficos</a></li>
+    <li><a class="w3-padding" href="/relatorios/">Relatórios</a></li>
+{% endblock %}
+
+
+{% block content %} 
+    {% if reg %}
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="sobrepor" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="horario" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="horarioMes" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        
+    {% else %}
+        <p class="navbar-brand" >Não existem registros.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'HTML/login.html' %}
+{% block head %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.maskedinput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/signin.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />    
+    <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+
+{% endblock %}
+    {% block body %} 
+    <div class="container">
+        <div class="row">
+            <!-- popup box modal starts here -->
+            <div id="formModal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" id="Tamanhopopup">
+                        <div class="modal-header">
+                            <center>     
+                                <h2 class="form-signin-heading">Obrigado!</h2>
+                                <h3 class="form-signin-heading">Verifique em seu email a confirmação para continuar a usar o sistema</h3>
+                                <h4> O email pode demorar até 15 minutos</h4>
+                                <a href="/">Voltar</a>
+                            </center>
+                        </div>
+                    </div>
+		        </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+{% endblock %}

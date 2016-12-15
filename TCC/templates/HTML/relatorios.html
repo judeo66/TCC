@@ -1,0 +1,63 @@
+{% extends 'HTML/index.html' %}                                                             # herda a pagina index 
+
+{% block title %} Relatórios {% endblock %} 
+
+
+{% block head %}
+    {% load static %}
+    {% get_static_prefix as STATIC_URL %}
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.maskedinput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-ui.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui.css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#date").datepicker({ nextText: "", prevText: "", changeMonth: true, changeYear: true }).mask("99/99/9999");
+            $("#date2").datepicker({ nextText: "", prevText: "", changeMonth: true, changeYear: true }).mask("99/99/9999");
+
+            $("#planilha").click(function(){                                    // função para trocar a pagina
+                var dt1 = new Date($("#date").val());
+                var dt2 = new Date($("#date2").val());
+                var dtHj = new Date();
+
+                if(dt1 > dtHj || dt2 > dtHj)
+                {
+                    alert("informe datas validas");
+                }
+            });
+            
+        });
+    </script>
+{% endblock %}
+
+
+
+{% block menu %}
+    <li><a class="w3-padding" href="/registros/">Registros </a></li>
+    <li><a class="w3-padding" href="/calculadora/">Calculadora</a></li>
+    <li><a class="w3-padding" href="/grafico/">Gráficos</a></li>
+    <li><a class="w3-padding" href="/relatorios/">Relatórios</a></li>                                                
+{% endblock %}
+{% block content %}                                 
+<form action="" class="form-signin" method="post">{% csrf_token %}
+
+	<h2 class="form-signin-heading">Relatórios</h2>
+    </br>
+
+    <h5 class="form-signin-heading">Será gerado uma planilha em excel para download ou para envio por email com os resultados do período epecificado</h5>
+    </br>
+
+    <h4 class="form-signin-heading">Período</h4>
+
+    <div class="form-group-lg">
+        <div class="col-lg-6"> 
+            <center>Data inicial<input id="date" type="text" tabindex="1" name="PrimeiraData" class="form-control" required/></center>
+        </div>
+        <div class="col-lg-6">
+            <center>Data final<input id="date2" type="text" tabindex="1" name="SegundaData" class="form-control" required/></center>
+            </br>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" id="planilha" type="submit">Gerar planilha</button>
+</form>
+{% endblock %}                                                                              # fim do conteudo adicional
